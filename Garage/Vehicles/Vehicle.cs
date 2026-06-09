@@ -1,4 +1,4 @@
-namespace Garage.Vehicle
+namespace Garage.Vehicles
 {
     public abstract class Vehicle
     {
@@ -6,7 +6,7 @@ namespace Garage.Vehicle
         public string Color { get; }
         public int NumberOfWheels { get; }
 
-        public Vehicle(string registrationNumber, string color, int numberOfWheels)
+        protected Vehicle(string registrationNumber, string color, int numberOfWheels)
         {
             RegistrationNumber = registrationNumber;
             Color = color;
