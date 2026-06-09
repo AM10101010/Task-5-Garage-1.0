@@ -1,5 +1,6 @@
 using System.Collections;
 using Garage.Vehicles;
+using System.Linq;
 
 namespace Garage;
 
@@ -28,4 +29,48 @@ public class Garage<T> : IEnumerable<T> where T : Vehicle
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    public bool Add(T vehicle)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(vehicle.RegistrationNumber);
+
+        if (CheckRegistrationNumber(vehicle.RegistrationNumber))
+            return false;
+
+        for (int i = 0; i < _vehicles.Length; i++)
+        {
+            if (_vehicles[i] is null)
+            {
+                _vehicles[i] = vehicle;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool Remove(string registrationNumber)
+    {
+        if (string.IsNullOrWhiteSpace(registrationNumber))
+            return false;
+
+        for (int i = 0; i < _vehicles.Length; i++)
+        {
+            T? vehicle = _vehicles[i];
+            if (vehicle is not null && string.Equals(vehicle.RegistrationNumber, registrationNumber,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                _vehicles[i] = null;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool CheckRegistrationNumber(string registrationNumber) =>
+        _vehicles.Any(v => v is not null &&
+                           string.Equals(v.RegistrationNumber, registrationNumber, StringComparison.OrdinalIgnoreCase));
 }
+
+    
