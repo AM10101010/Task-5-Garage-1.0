@@ -88,4 +88,11 @@ public class Garage<T> : IEnumerable<T> where T : Vehicle
             .Select(group => (VehicleType: group.Key, Count: group.Count()))
             .OrderBy(item => item.VehicleType);
     }
+    
+    public IEnumerable<T> Search(string? color = null, int? numberOfWheels = null)
+    {
+        return this.Where(vehicle =>
+            (color is null || string.Equals(vehicle.Color, color, StringComparison.OrdinalIgnoreCase)) &&
+            (numberOfWheels is null || vehicle.NumberOfWheels == numberOfWheels));
+    }
 }

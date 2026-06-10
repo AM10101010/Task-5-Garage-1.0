@@ -209,4 +209,67 @@ public class GarageTests
         // Act & Assert
         Assert.Empty(garage.CountByVehicleType());
     }
+    [Fact]
+    public void Search_ByColor_ReturnsMatchingVehicles()
+    {
+        // Arrange
+        var garage = new Garage<Vehicle>(5);
+        var red1 = new Car("ABC123", "Red", 4, FuelType.Gasoline);
+        var red2 = new Motorcycle("MC0001", "Red", 2, 600);
+        garage.Add(red1);
+        garage.Add(red2);
+        garage.Add(new Car("DEF456", "Blue", 4, FuelType.Diesel));
+
+        // Act
+        var results = garage.Search(color: "Red").ToList();
+
+        // Assert
+        Assert.Equal(2, results.Count);
+        Assert.Contains(red1, results);
+        Assert.Contains(red2, results);
+    }
+    [Fact]
+    public void Search_ByColorAndWheels_ReturnsOnlyVehiclesMatchingBoth()
+    {
+        // Arrange
+        var garage = new Garage<Vehicle>(5);
+        var match = new Car("ABC123", "Black", 4, FuelType.Gasoline);
+        garage.Add(match);
+        garage.Add(new Motorcycle("MC0001", "Black", 2, 600));   // black, but 2 wheels
+        garage.Add(new Car("DEF456", "Red", 4, FuelType.Diesel)); // 4 wheels, but red
+
+        // Act
+        var results = garage.Search(color: "Black", numberOfWheels: 4).ToList();
+
+        // Assert
+        Assert.Single(results);
+        Assert.Contains(match, results);
+    }
+    [Fact]
+    public void Search_NoCriteria_ReturnsAllVehicles()
+    {
+        // Arrange
+        var garage = new Garage<Vehicle>(5);
+        garage.Add(new Car("ABC123", "Red", 4, FuelType.Gasoline));
+        garage.Add(new Motorcycle("MC0001", "Black", 2, 600));
+
+        // Act
+        var results = garage.Search().ToList();
+
+        // Assert
+        Assert.Equal(2, results.Count);
+    }
+    [Fact]
+    public void Search_ColorIsCaseInsensitive()
+    {
+        // Arrange
+        var garage = new Garage<Vehicle>(5);
+        garage.Add(new Car("ABC123", "Red", 4, FuelType.Gasoline));
+
+        // Act
+        var results = garage.Search(color: "red").ToList();
+
+        // Assert
+        Assert.Single(results);
+    }
 }
