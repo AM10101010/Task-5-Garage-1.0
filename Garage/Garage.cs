@@ -1,6 +1,6 @@
 using System.Collections;
 using Garage.Vehicles;
-
+using System.Linq;
 namespace Garage;
 
 public class Garage<T> : IEnumerable<T> where T : Vehicle
@@ -79,5 +79,13 @@ public class Garage<T> : IEnumerable<T> where T : Vehicle
     {
         int index = IndexOf(registrationNumber);
         return index >= 0 ? _vehicles[index] : null;
+    }
+
+    public IEnumerable<(string VehicleType, int Count)> CountByVehicleType()
+    {
+        return this
+            .GroupBy(vehicle => vehicle.GetType().Name)
+            .Select(group => (VehicleType: group.Key, Count: group.Count()))
+            .OrderBy(item => item.VehicleType);
     }
 }

@@ -181,4 +181,32 @@ public class GarageTests
         Assert.Null(garage.FindByRegistrationNumber(""));
         Assert.Null(garage.FindByRegistrationNumber(null!));
     }
+    
+    [Fact]
+    public void CountByVehicleType_GroupsAndCountsByConcreteType()
+    {
+        // Arrange
+        var garage = new Garage<Vehicle>(5);
+        garage.Add(new Car("ABC123", "Red", 4, FuelType.Gasoline));
+        garage.Add(new Car("DEF456", "Blue", 4, FuelType.Diesel));
+        garage.Add(new Motorcycle("MC0001", "Black", 2, 600));
+
+        // Act
+        var counts = garage.CountByVehicleType()
+            .ToDictionary(x => x.VehicleType, x => x.Count);
+
+        // Assert
+        Assert.Equal(2, counts["Car"]);
+        Assert.Equal(1, counts["Motorcycle"]);
+    }
+
+    [Fact]
+    public void CountByVehicleType_EmptyGarage_ReturnsEmpty()
+    {
+        // Arrange
+        var garage = new Garage<Vehicle>(5);
+
+        // Act & Assert
+        Assert.Empty(garage.CountByVehicleType());
+    }
 }
