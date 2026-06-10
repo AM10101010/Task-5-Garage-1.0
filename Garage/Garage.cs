@@ -32,7 +32,7 @@ public class Garage<T> : IEnumerable<T> where T : Vehicle
 
     public bool Add(T vehicle)
     {
-        ArgumentException.ThrowIfNullOrEmpty(vehicle.RegistrationNumber);
+        ArgumentNullException.ThrowIfNull(vehicle);
 
         if (CheckRegistrationNumber(vehicle.RegistrationNumber))
             return false;
