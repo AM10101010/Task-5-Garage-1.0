@@ -1,6 +1,5 @@
 using System.Collections;
 using Garage.Vehicles;
-using System.Linq;
 
 namespace Garage;
 
@@ -13,7 +12,7 @@ public class Garage<T> : IEnumerable<T> where T : Vehicle
         if (capacity <= 0)
             throw new ArgumentOutOfRangeException(nameof(capacity),
                 "Capacity must be greater than zero.");
-
+        
         _vehicles = new T?[capacity];
     }
 
@@ -34,7 +33,7 @@ public class Garage<T> : IEnumerable<T> where T : Vehicle
     {
         ArgumentNullException.ThrowIfNull(vehicle);
 
-        if (CheckRegistrationNumber(vehicle.RegistrationNumber))
+        if (IndexOf(vehicle.RegistrationNumber) >= 0)
             return false;
 
         for (int i = 0; i < _vehicles.Length; i++)
@@ -42,35 +41,43 @@ public class Garage<T> : IEnumerable<T> where T : Vehicle
             if (_vehicles[i] is null)
             {
                 _vehicles[i] = vehicle;
-                return true;
+                    return true;
             }
         }
-
         return false;
     }
 
     public bool Remove(string registrationNumber)
     {
-        if (string.IsNullOrWhiteSpace(registrationNumber))
+        int index = IndexOf(registrationNumber);
+        if(index < 0)
             return false;
+        _vehicles[index] = null;
+            return true;
+    }
+
+    private int IndexOf(string registrationNumber)
+    {
+        if(string.IsNullOrWhiteSpace(registrationNumber))
+           return -1;
 
         for (int i = 0; i < _vehicles.Length; i++)
         {
             T? vehicle = _vehicles[i];
-            if (vehicle is not null && string.Equals(vehicle.RegistrationNumber, registrationNumber,
+            if (vehicle is not null && 
+                string.Equals(vehicle.RegistrationNumber, registrationNumber,
                     StringComparison.OrdinalIgnoreCase))
             {
-                _vehicles[i] = null;
-                return true;
-            }
+                return i;
+            }   
         }
 
-        return false;
+        return -1;
     }
-
-    private bool CheckRegistrationNumber(string registrationNumber) =>
-        _vehicles.Any(v => v is not null &&
-                           string.Equals(v.RegistrationNumber, registrationNumber, StringComparison.OrdinalIgnoreCase));
-}
-
     
+    public T? FindByRegistrationNumber(string registrationNumber)
+    {
+        int index = IndexOf(registrationNumber);
+        return index >= 0 ? _vehicles[index] : null;
+    }
+}

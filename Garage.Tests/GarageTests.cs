@@ -126,4 +126,59 @@ public class GarageTests
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => garage.Add(null!));
     }
+    [Fact]
+    public void FindByRegistrationNumber_ExistingVehicle_ReturnsThatVehicle()
+    {
+        // Arrange
+        var garage = new Garage<Vehicle>(5);
+        var car = new Car("ABC123", "Red", 4, FuelType.Gasoline);
+        garage.Add(car);
+
+        // Act
+        var found = garage.FindByRegistrationNumber("ABC123");
+
+        // Assert
+        Assert.Same(car, found);
+    }
+
+    [Fact]
+    public void FindByRegistrationNumber_IsCaseInsensitive()
+    {
+        // Arrange
+        var garage = new Garage<Vehicle>(5);
+        var car = new Car("ABC123", "Red", 4, FuelType.Gasoline);
+        garage.Add(car);
+
+        // Act
+        var found = garage.FindByRegistrationNumber("aBc123");
+
+        // Assert
+        Assert.Same(car, found);
+    }
+
+    [Fact]
+    public void FindByRegistrationNumber_NonExisting_ReturnsNull()
+    {
+        // Arrange
+        var garage = new Garage<Vehicle>(5);
+        garage.Add(new Car("ABC123", "Red", 4, FuelType.Gasoline));
+
+        // Act
+        var found = garage.FindByRegistrationNumber("ZZZ999");
+
+        // Assert
+        Assert.Null(found);
+    }
+
+    [Fact]
+    public void FindByRegistrationNumber_NullOrEmpty_ReturnsNull()
+    {
+        // Arrange
+        var garage = new Garage<Vehicle>(5);
+        garage.Add(new Car("ABC123", "Red", 4, FuelType.Gasoline));
+
+        // Act & Assert
+        Assert.Null(garage.FindByRegistrationNumber(""));
+        Assert.Null(garage.FindByRegistrationNumber(null!));
+    }
 }
