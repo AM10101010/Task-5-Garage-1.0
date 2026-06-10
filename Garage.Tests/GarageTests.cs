@@ -272,4 +272,14 @@ public class GarageTests
         // Assert
         Assert.Single(results);
     }
+    [Fact]
+    public void Park_DuplicateRegistration_ReturnsDuplicateResult()
+    {
+        var handler = new GarageHandler(5);
+        handler.Park(new Car("ABC123", "Red", 4, FuelType.Gasoline));
+
+        var result = handler.Park(new Car("abc123", "Blue", 4, FuelType.Diesel));
+
+        Assert.Equal(ParkResult.DuplicateRegistration, result);
+    }
 }
