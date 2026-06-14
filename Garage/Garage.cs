@@ -3,7 +3,7 @@ using Garage.Vehicles;
 using System.Linq;
 namespace Garage;
 
-public class Garage<T> : IEnumerable<T> where T : Vehicle
+public class Garage<T> : IEnumerable<T> where T : class, IVehicle
 {
     private readonly T?[] _vehicles;
 
@@ -52,12 +52,13 @@ public class Garage<T> : IEnumerable<T> where T : Vehicle
         int index = IndexOf(registrationNumber);
         if (index < 0)
             return false;
-        _vehicles[index] = null;
+        _vehicles[index] = default(T);
         return true;
     }
 
     private int IndexOf(string registrationNumber)
     {
+
         if (string.IsNullOrWhiteSpace(registrationNumber))
             return -1;
 
@@ -78,7 +79,7 @@ public class Garage<T> : IEnumerable<T> where T : Vehicle
     public T? FindByRegistrationNumber(string registrationNumber)
     {
         int index = IndexOf(registrationNumber);
-        return index >= 0 ? _vehicles[index] : null;
+        return index >= 0 ? _vehicles[index] : default(T);
     }
 
     public IEnumerable<(string VehicleType, int Count)> CountByVehicleType()

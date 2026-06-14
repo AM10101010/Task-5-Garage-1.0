@@ -1,27 +1,27 @@
 using Garage.Vehicles;
 namespace Garage;
 
-public class ConsoleUI
+public class ConsoleUI : IUI
 {
     public void Run()
     {
         Console.WriteLine("Welcome to the Garage!");
 
-        GarageHandler handler = CreateGarage();
+        IHandler handler = CreateGarage();
 
         MenuLoop(handler);
 
         Console.WriteLine("Goodbye!");
     }
 
-    private GarageHandler CreateGarage()
+    private IHandler CreateGarage()
     {
         int capacity = ReadInt("Enter garage capacity (parking spots): ", min: 1);
         Console.WriteLine($"Created a garage with {capacity} spots.");
         return new GarageHandler(capacity);
     }
 
-    private void MenuLoop(GarageHandler handler)
+    private void MenuLoop(IHandler handler)
     {
         bool running = true;
         while (running)
@@ -57,7 +57,7 @@ public class ConsoleUI
         Console.Write("Select an option: ");
     }
 
-    private static void ListAllVehicles(GarageHandler handler)
+    private static void ListAllVehicles(IHandler handler)
     {
         var vehicles = handler.GetAllVehicles().ToList();
         if (vehicles.Count == 0)
@@ -70,7 +70,7 @@ public class ConsoleUI
             Console.WriteLine(vehicle);
     }
 
-    private static void ListVehicleTypeCounts(GarageHandler handler)
+    private static void ListVehicleTypeCounts(IHandler handler)
     {
         var counts = handler.GetVehicleTypeCounts().ToList();
         if (counts.Count == 0)
@@ -127,7 +127,7 @@ public class ConsoleUI
             Console.WriteLine($"Please enter a number between {min} and {max}.");
         }
     }
-    private static void ParkVehicle(GarageHandler handler)
+    private static void ParkVehicle(IHandler handler)
     {
         Console.WriteLine();
         Console.WriteLine("Choose a vehicle type:");
@@ -188,7 +188,7 @@ public class ConsoleUI
         new Boat("SEA001", "Blue", 0, 8.5),
     };
 
-    private static void PopulateWithSamples(GarageHandler handler)
+    private static void PopulateWithSamples(IHandler handler)
     {
         if (!ReadYesNo("Populate with sample vehicles? (y/n): "))
             return;
@@ -220,7 +220,7 @@ public class ConsoleUI
             Console.WriteLine("Please enter a whole number, or leave blank to skip.");
         }
     }
-    private static void FindVehicle(GarageHandler handler)
+    private static void FindVehicle(IHandler handler)
     {
         string registration = ReadNonEmptyString("Registration number to find: ");
         Vehicle? vehicle = handler.Find(registration);
@@ -230,7 +230,7 @@ public class ConsoleUI
             : $"No vehicle with registration '{registration}' was found.");
     }
 
-    private static void SearchVehicles(GarageHandler handler)
+    private static void SearchVehicles(IHandler handler)
     {
         Console.WriteLine("Leave a field blank to skip that filter.");
         string? color = ReadOptionalString("Color: ");
@@ -246,7 +246,7 @@ public class ConsoleUI
         foreach (var vehicle in results)
             Console.WriteLine(vehicle);
     }
-        private static void RemoveVehicle(GarageHandler handler)
+        private static void RemoveVehicle(IHandler handler)
     {
         string registration = ReadNonEmptyString("Registration number to remove: ");
         bool removed = handler.Remove(registration);

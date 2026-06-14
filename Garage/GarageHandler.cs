@@ -2,7 +2,7 @@ using Garage.Vehicles;
 
 namespace Garage;
 
-public class GarageHandler
+public class GarageHandler : IHandler
 {
     private readonly Garage<Vehicle> _garage;
 

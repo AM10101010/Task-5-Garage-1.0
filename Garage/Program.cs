@@ -1,1 +1,4 @@
-﻿new Garage.ConsoleUI().Run();
+﻿using Garage;
+
+IUI ui = new ConsoleUI();
+ui.Run();
