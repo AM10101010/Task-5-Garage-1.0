@@ -196,15 +196,6 @@ public class ConsoleUI
         int parked = handler.Populate(CreateSampleVehicles());
         Console.WriteLine($"Populated the garage with {parked} sample vehicle(s).");
     }
-    private static void RemoveVehicle(GarageHandler handler)
-    {
-        string registration = ReadNonEmptyString("Registration number to remove: ");
-        bool removed = handler.Remove(registration);
-
-        Console.WriteLine(removed
-            ? $"{registration} was removed."
-            : $"No vehicle with registration '{registration}' was found.");
-    }
 
     private static string? ReadOptionalString(string prompt)
     {
@@ -254,5 +245,14 @@ public class ConsoleUI
 
         foreach (var vehicle in results)
             Console.WriteLine(vehicle);
+    }
+        private static void RemoveVehicle(GarageHandler handler)
+    {
+        string registration = ReadNonEmptyString("Registration number to remove: ");
+        bool removed = handler.Remove(registration);
+
+        Console.WriteLine(removed
+            ? $"{registration} was removed."
+            : $"No vehicle with registration '{registration}' was found.");
     }
 }
