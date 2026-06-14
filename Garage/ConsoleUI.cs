@@ -8,6 +8,7 @@ public class ConsoleUI
         Console.WriteLine("Welcome to the Garage!");
 
         GarageHandler handler = CreateGarage();
+
         MenuLoop(handler);
 
         Console.WriteLine("Goodbye!");
@@ -31,6 +32,10 @@ public class ConsoleUI
                 case "1": ListAllVehicles(handler); break;
                 case "2": ListVehicleTypeCounts(handler); break;
                 case "3": ParkVehicle(handler); break;
+                case "4": RemoveVehicle(handler); break;
+                case "5": FindVehicle(handler); break;
+                case "6": SearchVehicles(handler); break;
+                case "7": PopulateWithSamples(handler); break;
                 case "0": running = false; break;
                 default: Console.WriteLine("Invalid choice. Please try again."); break;
             }
@@ -44,6 +49,10 @@ public class ConsoleUI
         Console.WriteLine("1. List all parked vehicles");
         Console.WriteLine("2. List vehicle types and counts");
         Console.WriteLine("3. Park a vehicle");
+        Console.WriteLine("4. Remove a vehicle");
+        Console.WriteLine("5. Find a vehicle by registration");
+        Console.WriteLine("6. Search vehicles");
+        Console.WriteLine("7. Populate with sample vehicles");
         Console.WriteLine("0. Quit");
         Console.Write("Select an option: ");
     }
@@ -156,5 +165,94 @@ public class ConsoleUI
             _ => "Unknown result."
         };
         Console.WriteLine(message);
+    }
+    private static bool ReadYesNo(string prompt)
+    {
+        while (true)
+        {
+            Console.Write(prompt);
+            string? input = Console.ReadLine()?.Trim().ToLowerInvariant();
+
+            if (input is "y" or "yes") return true;
+            if (input is "n" or "no") return false;
+
+            Console.WriteLine("Please answer y or n.");
+        }
+    }
+    private static IEnumerable<Vehicle> CreateSampleVehicles() => new Vehicle[]
+    {
+        new Car("ABC123", "Red", 4, FuelType.Gasoline),
+        new Motorcycle("MC1000", "Black", 2, 600),
+        new Bus("BUS500", "Yellow", 6, 50),
+        new Airplane("AIR747", "White", 3, 60.0),
+        new Boat("SEA001", "Blue", 0, 8.5),
+    };
+
+    private static void PopulateWithSamples(GarageHandler handler)
+    {
+        if (!ReadYesNo("Populate with sample vehicles? (y/n): "))
+            return;
+
+        int parked = handler.Populate(CreateSampleVehicles());
+        Console.WriteLine($"Populated the garage with {parked} sample vehicle(s).");
+    }
+    private static void RemoveVehicle(GarageHandler handler)
+    {
+        string registration = ReadNonEmptyString("Registration number to remove: ");
+        bool removed = handler.Remove(registration);
+
+        Console.WriteLine(removed
+            ? $"{registration} was removed."
+            : $"No vehicle with registration '{registration}' was found.");
+    }
+
+    private static string? ReadOptionalString(string prompt)
+    {
+        Console.Write(prompt);
+        string? input = Console.ReadLine();
+        return string.IsNullOrWhiteSpace(input) ? null : input.Trim();
+    }
+
+    private static int? ReadOptionalInt(string prompt)
+    {
+        while (true)
+        {
+            Console.Write(prompt);
+            string? input = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(input))
+                return null;                       // blank → no filter
+
+            if (int.TryParse(input, out int value))
+                return value;
+
+            Console.WriteLine("Please enter a whole number, or leave blank to skip.");
+        }
+    }
+    private static void FindVehicle(GarageHandler handler)
+    {
+        string registration = ReadNonEmptyString("Registration number to find: ");
+        Vehicle? vehicle = handler.Find(registration);
+
+        Console.WriteLine(vehicle is not null
+            ? vehicle.ToString()
+            : $"No vehicle with registration '{registration}' was found.");
+    }
+
+    private static void SearchVehicles(GarageHandler handler)
+    {
+        Console.WriteLine("Leave a field blank to skip that filter.");
+        string? color = ReadOptionalString("Color: ");
+        int? wheels = ReadOptionalInt("Number of wheels: ");
+
+        var results = handler.Search(color, wheels).ToList();
+        if (results.Count == 0)
+        {
+            Console.WriteLine("No matching vehicles found.");
+            return;
+        }
+
+        foreach (var vehicle in results)
+            Console.WriteLine(vehicle);
     }
 }

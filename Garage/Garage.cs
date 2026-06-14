@@ -12,7 +12,7 @@ public class Garage<T> : IEnumerable<T> where T : Vehicle
         if (capacity <= 0)
             throw new ArgumentOutOfRangeException(nameof(capacity),
                 "Capacity must be greater than zero.");
-        
+
         _vehicles = new T?[capacity];
     }
 
@@ -41,7 +41,7 @@ public class Garage<T> : IEnumerable<T> where T : Vehicle
             if (_vehicles[i] is null)
             {
                 _vehicles[i] = vehicle;
-                    return true;
+                return true;
             }
         }
         return false;
@@ -50,31 +50,31 @@ public class Garage<T> : IEnumerable<T> where T : Vehicle
     public bool Remove(string registrationNumber)
     {
         int index = IndexOf(registrationNumber);
-        if(index < 0)
+        if (index < 0)
             return false;
         _vehicles[index] = null;
-            return true;
+        return true;
     }
 
     private int IndexOf(string registrationNumber)
     {
-        if(string.IsNullOrWhiteSpace(registrationNumber))
-           return -1;
+        if (string.IsNullOrWhiteSpace(registrationNumber))
+            return -1;
 
         for (int i = 0; i < _vehicles.Length; i++)
         {
             T? vehicle = _vehicles[i];
-            if (vehicle is not null && 
+            if (vehicle is not null &&
                 string.Equals(vehicle.RegistrationNumber, registrationNumber,
                     StringComparison.OrdinalIgnoreCase))
             {
                 return i;
-            }   
+            }
         }
 
         return -1;
     }
-    
+
     public T? FindByRegistrationNumber(string registrationNumber)
     {
         int index = IndexOf(registrationNumber);
@@ -88,7 +88,7 @@ public class Garage<T> : IEnumerable<T> where T : Vehicle
             .Select(group => (VehicleType: group.Key, Count: group.Count()))
             .OrderBy(item => item.VehicleType);
     }
-    
+
     public IEnumerable<T> Search(string? color = null, int? numberOfWheels = null)
     {
         return this.Where(vehicle =>
