@@ -36,6 +36,8 @@ public class ConsoleUI : IUI
                 case "5": FindVehicle(handler); break;
                 case "6": SearchVehicles(handler); break;
                 case "7": PopulateWithSamples(handler); break;
+                case "8": SaveGarage(handler); break;
+                case "9": LoadGarage(handler); break;
                 case "0": running = false; break;
                 default: Console.WriteLine("Invalid choice. Please try again."); break;
             }
@@ -53,6 +55,8 @@ public class ConsoleUI : IUI
         Console.WriteLine("5. Find a vehicle by registration");
         Console.WriteLine("6. Search vehicles");
         Console.WriteLine("7. Populate with sample vehicles");
+        Console.WriteLine("8, Save garage to file");
+        Console.WriteLine("9, Load garage from file");
         Console.WriteLine("0. Quit");
         Console.Write("Select an option: ");
     }
@@ -254,5 +258,32 @@ public class ConsoleUI : IUI
         Console.WriteLine(removed
             ? $"{registration} was removed."
             : $"No vehicle with registration '{registration}' was found.");
+    }
+    private const string SaveFilePath = "garage.json";
+
+    private static void SaveGarage(IHandler handler)
+    {
+        try
+        {
+            handler.SaveToFile(SaveFilePath);
+            Console.WriteLine($"Garage saved to {SaveFilePath}.");
+        }
+        catch (InvalidOperationException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private static void LoadGarage(IHandler handler)
+    {
+        try
+        {
+            int loaded = handler.LoadFromFile(SaveFilePath);
+            Console.WriteLine($"Loaded {loaded} vehicle(s) from {SaveFilePath}.");
+        }
+        catch (InvalidOperationException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
     }
 }

@@ -14,5 +14,7 @@ public interface IHandler
     IEnumerable<(string VehicleType, int Count)> GetVehicleTypeCounts();
     IEnumerable<Vehicle> Search(string? color = null, int? numberOfWheels = null);
     int Populate(IEnumerable<Vehicle> vehicles);
+    void SaveToFile(string path);
+    int LoadFromFile(string path);
 }
 

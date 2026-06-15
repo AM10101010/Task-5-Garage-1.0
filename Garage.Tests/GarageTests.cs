@@ -282,4 +282,42 @@ public class GarageTests
 
         Assert.Equal(ParkResult.DuplicateRegistration, result);
     }
+    [Fact]
+    public void Clear_RemovesAllVehicles()
+    {
+        // Arrange
+        var garage = new Garage<Vehicle>(5);
+        garage.Add(new Car("ABC123", "Red", 4, FuelType.Gasoline));
+        garage.Add(new Car("DEF456", "Blue", 4, FuelType.Diesel));
+
+        // Act
+        garage.Clear();
+
+        // Assert
+        Assert.Empty(garage);
+    }
+    [Fact]
+    public void ToJson_ThenFromJson_PreservesTypesAndProperties()
+    {
+        // Arrange
+        var original = new List<Vehicle>
+        {
+            new Car("ABC123", "Red", 4, FuelType.Diesel),
+            new Boat("BOAT01", "White", 0, 6.5),
+        };
+
+        // Act
+        string json = GarageStorage.ToJson(original);
+        List<Vehicle> restored = GarageStorage.FromJson(json);
+
+        // Assert
+        Assert.Equal(2, restored.Count);
+
+        var car = Assert.IsType<Car>(restored[0]);     // type preserved
+        Assert.Equal("ABC123", car.RegistrationNumber); // base property
+        Assert.Equal(FuelType.Diesel, car.FuelType);    // subclass-specific property
+
+        var boat = Assert.IsType<Boat>(restored[1]);
+        Assert.Equal(6.5, boat.Length);
+    }
 }

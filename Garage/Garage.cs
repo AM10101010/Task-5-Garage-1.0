@@ -96,4 +96,9 @@ public class Garage<T> : IEnumerable<T> where T : class, IVehicle
             (color is null || string.Equals(vehicle.Color, color, StringComparison.OrdinalIgnoreCase)) &&
             (numberOfWheels is null || vehicle.NumberOfWheels == numberOfWheels));
     }
+    public void Clear()
+    {
+        for (int i = 0; i < _vehicles.Length; i++)
+            _vehicles[i] = default(T);   // null for reference types (guaranteed by the class constraint)
+    }
 }

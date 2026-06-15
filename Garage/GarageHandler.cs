@@ -50,4 +50,19 @@ public class GarageHandler : IHandler
 
         return parked;
     }
+    public void SaveToFile(string path) =>
+        GarageStorage.Save(path, GetAllVehicles());
+
+    public int LoadFromFile(string path)
+    {
+        List<Vehicle> vehicles = GarageStorage.Load(path);
+
+        _garage.Clear();                 // load replaces current contents
+        int loaded = 0;
+        foreach (Vehicle vehicle in vehicles)
+            if (_garage.Add(vehicle))
+                loaded++;
+
+        return loaded;
+    }
 }
