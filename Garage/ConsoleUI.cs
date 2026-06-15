@@ -55,8 +55,8 @@ public class ConsoleUI : IUI
         Console.WriteLine("5. Find a vehicle by registration");
         Console.WriteLine("6. Search vehicles");
         Console.WriteLine("7. Populate with sample vehicles");
-        Console.WriteLine("8, Save garage to file");
-        Console.WriteLine("9, Load garage from file");
+        Console.WriteLine("8. Save garage to file");
+        Console.WriteLine("9. Load garage from file");
         Console.WriteLine("0. Quit");
         Console.Write("Select an option: ");
     }
