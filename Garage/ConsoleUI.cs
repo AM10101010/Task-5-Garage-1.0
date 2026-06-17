@@ -239,18 +239,24 @@ public class ConsoleUI : IUI
         Console.WriteLine("Leave a field blank to skip that filter.");
         string? color = ReadOptionalString("Color: ");
         int? wheels = ReadOptionalInt("Number of wheels: ");
+        string? type = ReadOptionalString("Vehicle type (Car, Motorcycle, Bus, Airplane, Boat): ");
 
-        var results = handler.Search(color, wheels).ToList();
-        if (results.Count == 0)
+        IEnumerable<Vehicle> results = handler.Search(color, wheels);
+        if (type is not null)
+            results = results.Where(v =>
+                string.Equals(v.GetType().Name, type, StringComparison.OrdinalIgnoreCase));
+
+        var list = results.ToList();
+        if (list.Count == 0)
         {
             Console.WriteLine("No matching vehicles found.");
             return;
         }
 
-        foreach (var vehicle in results)
+        foreach (var vehicle in list)
             Console.WriteLine(vehicle);
     }
-        private static void RemoveVehicle(IHandler handler)
+    private static void RemoveVehicle(IHandler handler)
     {
         string registration = ReadNonEmptyString("Registration number to remove: ");
         bool removed = handler.Remove(registration);
