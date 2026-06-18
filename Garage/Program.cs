@@ -1,4 +1,4 @@
 ﻿using Garage;
 
-IUI ui = new ConsoleUI();
+ConsoleUI ui = new ConsoleUI(capacity => new GarageHandler(capacity));
 ui.Run();

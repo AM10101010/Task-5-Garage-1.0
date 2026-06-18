@@ -3,6 +3,13 @@ namespace Garage;
 
 public class ConsoleUI : IUI
 {
+    private readonly Func<int, IHandler> _handlerFactory;
+    public ConsoleUI(Func<int, IHandler> handlerFactory)
+    {
+        _handlerFactory = handlerFactory
+            ?? throw new ArgumentNullException(nameof(handlerFactory));
+    }
+
     public void Run()
     {
         Console.WriteLine("Welcome to the Garage!");
@@ -18,7 +25,7 @@ public class ConsoleUI : IUI
     {
         int capacity = ReadInt("Enter garage capacity (parking spots): ", min: 1);
         Console.WriteLine($"Created a garage with {capacity} spots.");
-        return new GarageHandler(capacity);
+        return _handlerFactory(capacity);
     }
 
     private void MenuLoop(IHandler handler)
